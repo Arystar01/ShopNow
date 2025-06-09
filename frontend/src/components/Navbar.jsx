@@ -29,25 +29,25 @@ const Navbar = () => {
       {/* img logo */}
       <img src={logo} alt="Logo" className="w-36 rounded-md" />
 
-      <ul className=" hidden  sm:flex gap-4 text-black font-bold text-lg ">
-        <NavLink to="/" className=" flex flex-col items-center gap-1">
-          <p>HOME</p>
-          <hr className="w-2/4 border-dotted  h-[1.5px] bg-gray-700 " />
-        </NavLink>
-        <NavLink to="/collection" className=" flex flex-col items-center gap-1">
-          <p>COLLECTION</p>
-           <hr className="w-2/4 border-dotted  h-[1.5px] bg-gray-700 " />
-        </NavLink>
-        <NavLink to="/about" className=" flex flex-col items-center gap-1">
-          <p>ABOUT</p>
-        <hr className="w-2/4 border-dotted  h-[1.5px] bg-gray-700 " />
-        </NavLink>
+      <ul className="hidden sm:flex gap-4 text-black font-bold text-lg">
+  {[
+    { path: "/", label: "HOME" },
+    { path: "/collection", label: "COLLECTION" },
+    { path: "/about", label: "ABOUT" },
+    { path: "/contact", label: "CONTACT" },
+  ].map(({ path, label }) => (
+    <NavLink
+      key={path}
+      to={path}
+      className={({ isActive }) => `flex flex-col items-center gap-1 ${isActive ? "text-black" : "text-gray-500"}`}
+    >
+      <p>{label}</p>
+      {/** Only show <hr> if active */}
+      <hr className={`w-2/4 border-dotted h-[1.5px] transition-all duration-300 ${path === location.pathname ? "bg-gray-700" : "bg-transparent"}`} />
+    </NavLink>
+  ))}
+</ul>
 
-        <NavLink to="/contact" className=" flex flex-col items-center gap-1">
-          <p>CONTACT</p>
-     <hr className="w-2/4 border-dotted  h-[1.5px] bg-gray-700 " />
-        </NavLink>
-      </ul>
 
       <div className="flex items-center gap-6">
         <img onClick={() => { setShowSearch(true); navigate('/collection') }} src={assets.search_icon} alt="search" className="w-6 h-6 cursor-pointer" />
