@@ -3,6 +3,7 @@ import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 import CartTotal from "../components/CartTotal";
 
 const PlaceOrder = () => {
@@ -100,22 +101,16 @@ const PlaceOrder = () => {
       items: orderItems,
     };
     switch (method) {
-      case "cod": {
-        try {
-          const { data } = await axios.post(
-            backendUrl + "/api/order/createOrder",
-            orderData,
-            { headers: { token } }
-          );
-          if (data.success) {
-            navigate("/orders");
-            setCartItems({});
-          }
-        } catch (err) {
-          console.error("Order creation failed", err);
-        }
-        break;
-      }
+      case 'cod':{
+                    const response = await axios.post(backendUrl + '/api/order/place',orderData,{headers:{token}})
+                    if (response.data.success) {
+                        setCartItems({})
+                        navigate('/orders')
+                    } else {
+                        toast.error(response.data.message)
+                    }
+                    break;
+                }
       case "razorpay": {
         const responseRazorpay = await axios.post(
           backendUrl + "/api/order/razorpay",

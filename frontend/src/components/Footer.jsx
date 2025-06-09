@@ -29,8 +29,8 @@ const Footer = () => {
           <ul className='flex flex-col gap-1 text-gray-600'>
             <Link to='tel:91-8318627869'>📞 +91 83186 27869</Link>
             <Link to='mailto:aryan.rastogi.dev@gmail.com'>✉️ aryan.rastogi.dev@gmail.com</Link>
-            <a href='https://github.com/aryanrastogi03' target='_blank' rel='noopener noreferrer'>💻 GitHub</a>
-            <a href='https://linkedin.com/in/aryanrastogi03' target='_blank' rel='noopener noreferrer'>🔗 LinkedIn</a>
+            <a href='https://github.com/aryanrastogi05' target='_blank' rel='noopener noreferrer'>💻 GitHub</a>
+            <a href='https://linkedin.com/in/aryanrastogi05' target='_blank' rel='noopener noreferrer'>🔗 LinkedIn</a>
           </ul>
         </div>
 
