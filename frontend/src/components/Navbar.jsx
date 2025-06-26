@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import logo from "../assets/img_logo.png";
 import { NavLink } from "react-router-dom";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -12,6 +12,8 @@ import axios from "axios";
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
+  const [isAdminn, setisAdminn] = useState(false);
+
   const {
     setShowSearch,
     getCartCount,
@@ -27,6 +29,13 @@ const Navbar = () => {
     setToken("");
     setCartItems({});
   };
+
+useEffect(() => {
+  const token = localStorage.getItem("token");
+  const isAdmin = localStorage.getItem("isAdmin") === "true"; // ✅ convert string to boolean
+  setisAdminn(isAdmin);
+  setToken(token);
+}, []);
 
   return (
     <div
@@ -84,7 +93,14 @@ const Navbar = () => {
           {token && (
             <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
               <div className="flex flex-col gap-2 w-36 py-3 px-5  bg-slate-100 text-gray-500 rounded">
-                <p className="cursor-pointer hover:text-black">My Profile</p>
+                <Link
+  to="/profile"
+  className="cursor-pointer hover:text-black"
+>
+  My Profile
+</Link>
+
+                
                 <p
                   onClick={() => navigate("/orders")}
                   className="cursor-pointer hover:text-black"
@@ -93,7 +109,18 @@ const Navbar = () => {
                 </p>
                 <p onClick={logout} className="cursor-pointer hover:text-black">
                   Logout
+                 
                 </p>
+                {
+                  isAdminn && (
+                    <p
+                      onClick={() => navigate("/admin")}
+                      className="cursor-pointer hover:text-black"
+                    >
+                      Admin
+                    </p>
+                  )
+                }
               </div>
             </div>
           )}

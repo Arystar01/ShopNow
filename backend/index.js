@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
 
 app.listen(port, () => {
     connectDb();
-    connectCloudinary();
+    // connectCloudinary();
     console.log(`Server is running on port ${port}`);
     
 });

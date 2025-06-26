@@ -1,18 +1,4 @@
 // ProductList.jsx
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import React from 'react';
 import ProductItem from './ProductItem';
 
