@@ -31,7 +31,7 @@ const Navbar = () => {
   };
 
 useEffect(() => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token")  || token ;
   const isAdmin = localStorage.getItem("isAdmin") === "true"; // ✅ convert string to boolean
   setisAdminn(isAdmin);
   setToken(token);

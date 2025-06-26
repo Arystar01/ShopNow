@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { ShopContext } from "../context/ShopContext";
 import { assets } from "../assets/assets";
 import RelatedProducts from "../components/RelatedProducts";
+
 const Product = () => {
   const { productId } = useParams();
   const { currency, addToCart } = useContext(ShopContext);
@@ -11,18 +12,23 @@ const Product = () => {
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
 
+  const navigate = useNavigate(); // Initialize useNavigate hook
+
   const fetchProductData = async () => {
-    products.map((item) => {
-      if (item._id === productId) {
-        setProductData(item);
-        setImage(item.image[0]);
-        return null;
-      }
-    });
+    const foundProduct = products.find((item) => item._id === productId);
+    if (foundProduct) {
+      setProductData(foundProduct);
+      setImage(foundProduct.image[0]);
+    } else {
+      console.warn("Product not found:", productId);
+      // Optional: navigate('/404'); or navigate('/');
+    }
   };
 
   useEffect(() => {
-    fetchProductData();
+    if (products.length > 0) {
+      fetchProductData();
+    }
   }, [productId, products]);
 
   return productData ? (
@@ -81,12 +87,24 @@ const Product = () => {
               ))}
             </div>
           </div>
-          <button
-            onClick={() => addToCart(productData._id, size)}
-            className="bg-black text-white px-8 py-3 text-sm active:bg-gray-700"
-          >
-            ADD TO CART
-          </button>
+          {/* --- Updated Button Group --- */}
+          <div className="flex gap-4 items-center"> {/* Added a flex container for buttons */}
+            <button
+              onClick={() => addToCart(productData._id, size)}
+              className="bg-black text-white px-8 py-3 text-sm active:bg-gray-700"
+            >
+              ADD TO CART
+            </button>
+            <button
+                onClick={() => navigate(-1)} // This goes back to the previous page
+                className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-4 rounded inline-flex items-center text-sm" // Adjusted padding and font size to match ADD TO CART
+            >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                <span>Go Back</span>
+            </button>
+          </div>
+          {/* --- End Updated Button Group --- */}
+
           <hr className="mt-8 sm:w-4/5" />
           <div className="text-sm text-gray-500 mt-5 flex flex-col gap-1">
             <p>100% Original product.</p>

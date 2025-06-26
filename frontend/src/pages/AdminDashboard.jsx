@@ -10,50 +10,28 @@ const AdminDashboard = () => {
   const [orders, setOrders] = useState([]);
   const [editProductId, setEditProductId] = useState(null);
   const [editProductData, setEditProductData] = useState({});
- const [newProductData, setNewProductData] = useState({
-  name: "Nike Air Max 90",
-  description: "High-performance running shoes with air cushioning.",
-  price: "129.99",
-  category: "Footwear",
-  subCategory: "Running Shoes",
-  sizes: "7,8,9,10,11",
-  bestseller: "true",
-  quantity: "100",
-  color: "Black/White",
-  brand: "Nike",
-  image:""
-});
+ const [newProductData, setNewProductData] = useState(
+{
+  "name": "Under Armour Base Layer",
+  "description": "Compression fit base layer for cold-weather training.",
+  "price": "45.00",
+  "category": "Topwear",
+  "subCategory": "Thermals",
+  "sizes": "S,M,L,XL",
+  "bestseller": "false",
+  "quantity": "50",
+  "color": "Charcoal",
+  "brand": "Under Armour",
+  "image": ""
+}
+
+
+
+);
 
   const [showNewProductForm, setShowNewProductForm] = useState(false);
   const [addAdminForm, setAddAdminForm] = useState(false);
-//  useEffect(() => {
-//   const checkAdmin = async () => {
-//     try {
-//       console.log("Checking admin status...");
-//       console.log(localStorage.getItem("token"));
-//       if (!backendUrl) {
-//         console.error("Backend URL is not set");}
-//       const res =  await axios.get(`${backendUrl}/api/user/admin` ,{
-//         headers: {
-         
-//           email: localStorage.getItem("email"),
-//           token:localStorage.getItem("token"),
 
-//         },
-//       });
-//       console.log("Admin check response:", res.data);
-//       if (res.data.success) {
-//         setIsAdmin(true);
-//         localStorage.setItem("isAdmin", "true");
-//       }
-      
-//     } catch (err) {
-//       console.error("Admin check failed", err);
-//       setIsAdmin(localStorage.getItem("isAdmin") === "true");
-//     }
-//   };
-//   checkAdmin();
-// }, []);
 const [newAdminData, setNewAdminData] = useState({ name: "", email: "" });
 
 const addAdmin = async (e) => {

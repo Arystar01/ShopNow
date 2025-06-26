@@ -1,104 +1,153 @@
-  import { useState, useContext, useEffect } from 'react';
-  import { ShopContext } from '../context/ShopContext';
-  import CartTotal from '../components/CartTotal';
-  import { MdDelete } from 'react-icons/md';
+import { useState, useContext, useEffect } from 'react';
+import { ShopContext } from '../context/ShopContext';
+import CartTotal from '../components/CartTotal';
+import { MdDelete } from 'react-icons/md';
+import { FaPlus, FaMinus } from 'react-icons/fa';
+import { Link } from 'react-router-dom'; // Import Link for navigation
 
-  const Cart = () => {
-    const { products, currency, cartItems, updateQuantity, navigate } = useContext(ShopContext);
-    const [cartData, setCartData] = useState([]);
+const Cart = () => {
+  const { products, currency, cartItems, updateQuantity, navigate } = useContext(ShopContext);
+  const [cartData, setCartData] = useState([]);
 
-    useEffect(() => {
-      if (products.length > 0 && Object.keys(cartItems).length > 0) {
-        const cart = Object.entries(cartItems).map(([key, quantity]) => {
-          const [productId, size] = key.split("_");
-          const product = products.find((product) => product._id === productId);
-          if (product) {
-            return {
-              ...product,
-              size,
-              quantity,
-            };
+  const MAX_QUANTITY = 10;
+
+  useEffect(() => {
+    const newCartData = [];
+    if (products.length > 0 && Object.keys(cartItems).length > 0) {
+      for (const productId in cartItems) {
+        const product = products.find((p) => p._id === productId);
+
+        if (product && cartItems[productId] && typeof cartItems[productId] === 'object') {
+          for (const size in cartItems[productId]) {
+            const quantity = cartItems[productId][size];
+            if (quantity > 0) {
+              newCartData.push({
+                ...product,
+                size,
+                quantity,
+              });
+            }
           }
-          return null;
-        }).filter(item => item !== null);
-        setCartData(cart);
-      } else {
-        setCartData([]);
+        }
       }
-    }, [products, cartItems]);
+    }
+    setCartData(newCartData);
+  }, [products, cartItems]);
 
-    return (
-      <div>
-        <div className='border-t pt-14'>
-          <div className='text-2xl mb-3'>
-            <h1>YOUR SHOP CART</h1>
+  const handleIncreaseQuantity = (itemId, size, currentQuantity) => {
+    if (currentQuantity < MAX_QUANTITY) {
+      updateQuantity(itemId, size, currentQuantity + 1);
+    }
+  };
+
+  const handleDecreaseQuantity = (itemId, size, currentQuantity) => {
+    if (currentQuantity > 1) {
+      updateQuantity(itemId, size, currentQuantity - 1);
+    }
+  };
+
+  return (
+    <div className='container mx-auto px-4 py-8'>
+      <div className='border-t pt-8'>
+        <h1 className='text-3xl font-semibold mb-6 text-gray-800'>YOUR SHOPPING CART</h1>
+
+        {cartData.length === 0 ? (
+          <div className='text-center text-gray-500 mt-12 text-lg'>
+            <p className="text-center text-gray-500 mt-12 text-lg">Your cart is currently empty. Start shopping now!</p>
+            <button
+              onClick={() => navigate('/')} // Use navigate for internal routing
+              className='mt-6 px-6 py-3 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition-colors duration-200'
+            >
+              Shop now
+            </button>
           </div>
-
-          <div>
-            {cartData.length === 0 ? (
-              <p className="text-center text-gray-500 mt-8">Your cart is empty.</p>
-            ) : (
-              cartData.map((item, index) => (
-                <div
-                  key={`${item._id}_${item.size}_${index}`}
-                  className='py-4 border-t border-b text-gray-700 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4'
-                >
-                  <div className='flex items-start gap-6'>
+        ) : (
+          <div className='space-y-6'>
+            {cartData.map((item) => (
+              <div
+                key={`${item._id}_${item.size}`}
+                className='flex flex-col sm:flex-row items-center justify-between py-6 border-b last:border-b-0 text-gray-700 gap-4'
+              >
+                <div className='flex items-start gap-6 flex-grow'>
+                  {/* Link for product image */}
+                  <Link to={`/product/${item._id}`} className="block">
                     <img
-                      className='w-16 sm:w-20'
+                      className='w-20 h-20 object-cover rounded-md shadow-sm hover:opacity-80 transition-opacity'
                       src={item.image?.[0] || '/placeholder.jpg'}
                       alt={item.name}
+                      title="View product details"
                     />
-                    <div>
-                      <p className='text-xs sm:text-lg font-medium'>{item.name}</p>
-                      <div className='text-xs sm:text-sm text-gray-500'>
-                        <p>Category: {item.category}</p>
-                        <p>Sub-category: {item.subCategory}</p>
-                        <p className="line-clamp-2">Description: {item.description}</p>
-                      </div>
-                      <div className='flex items-center gap-5 mt-2'>
-                        <p>{currency}{item.price}</p>
-                        <p className='px-2 sm:px-3 sm:py-1 border bg-slate-50'>{item.size}</p>
-                      </div>
+                  </Link>
+                  <div>
+                    {/* Link for product name */}
+                    <Link to={`/product/${item._id}`} className="text-lg sm:text-xl font-medium text-gray-900 mb-1 hover:underline">
+                      {item.name}
+                    </Link>
+                    <div className='text-sm sm:text-base text-gray-500 space-y-0.5'>
+                      <p>Category: <span className="font-light">{item.category}</span></p>
+                      <p>Sub-category: <span className="font-light">{item.subCategory}</span></p>
+                      {item.description && (
+                        <p className="line-clamp-2">Description: <span className="font-light">{item.description}</span></p>
+                      )}
+                    </div>
+                    <div className='flex items-center gap-4 mt-3'>
+                      <p className='text-md font-semibold'>{currency}{item.price}</p>
+                      <span className='px-3 py-1 bg-gray-100 border border-gray-200 rounded text-sm font-medium'>
+                        Size: {item.size}
+                      </span>
                     </div>
                   </div>
+                </div>
 
-                  <input
-                    onChange={(e) =>
-                      e.target.value === '' || e.target.value === '0'
-                        ? null
-                        : updateQuantity(item._id, item.size, Number(e.target.value))
-                    }
-                    className='border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1'
-                    type="number"
-                    min={1}
-                    defaultValue={item.quantity}
-                  />
+                <div className='flex items-center gap-2 mt-4 sm:mt-0'>
+                  <button
+                    onClick={() => handleDecreaseQuantity(item._id, item.size, item.quantity)}
+                    disabled={item.quantity <= 1}
+                    className='p-2 border border-gray-300 rounded-md bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+                    title="Decrease quantity"
+                  >
+                    <FaMinus className="w-4 h-4" />
+                  </button>
+                  <span className='w-10 sm:w-12 text-center py-2 border border-gray-300 rounded-md text-lg font-medium'>
+                    {item.quantity}
+                  </span>
+                  <button
+                    onClick={() => handleIncreaseQuantity(item._id, item.size, item.quantity)}
+                    disabled={item.quantity >= MAX_QUANTITY}
+                    className='p-2 border border-gray-300 rounded-md bg-white hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
+                    title="Increase quantity"
+                  >
+                    <FaPlus className="w-4 h-4" />
+                  </button>
+
                   <MdDelete
                     onClick={() => updateQuantity(item._id, item.size, 0)}
-                    className='w-5 h-5 cursor-pointer text-red-500'
+                    className='w-7 h-7 cursor-pointer text-red-600 hover:text-red-700 transition-colors duration-200 ml-4'
+                    title="Remove item from cart"
                   />
                 </div>
-              ))
-            )}
-          </div>
-
-          <div className='flex justify-end my-20'>
-            <div className='w-full sm:w-[450px]'>
-              <CartTotal />
-              <div className='w-full text-end'>
-                <button
-                  onClick={() => navigate('/place-order')}
-                  className='bg-black text-white text-sm my-8 px-8 py-3'
-                >
-                  PROCEED TO CHECKOUT
-                </button>
               </div>
+            ))}
+          </div>
+        )}
+
+        <div className='flex justify-end my-16'>
+          <div className='w-full sm:w-[450px] bg-gray-50 p-6 rounded-lg shadow-md'>
+            <CartTotal />
+            <div className='w-full text-end mt-8'>
+              <button
+                onClick={() => navigate('/place-order')}
+                disabled={cartData.length === 0}
+                className='w-full bg-black text-white text-lg font-semibold py-4 rounded-md hover:bg-gray-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed'
+              >
+                PROCEED TO CHECKOUT
+              </button>
             </div>
           </div>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
 
-  export default Cart;
+export default Cart;
