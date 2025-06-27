@@ -163,7 +163,9 @@ const ShopContextProvider = (props) => {
 
     const getUserCart = async (userToken) => {
         try {
-            const response = await axios.post(backendUrl + '/api/cart/get', {}, { headers: { token: userToken } });
+            const response = await axios.post(backendUrl + '/api/cart/get', {}, { headers: { token: userToken } ,
+                userId: localStorage.getItem('userId')
+            });
             if (response.data.success) {
                 // Backend cart structure might be different, adjust if needed
                 // Assuming backend returns { productId: { size: quantity, ... }, ... }

@@ -4,7 +4,7 @@ const getUserCart = async (req, res) => {
   try {
     // Assuming userId is coming from authentication middleware (req.userId) if you're using tokens
     // If not, and you're relying on req.body for userId, you'll need to adjust your frontend calls
-    const userId = req.userId; // Use req.userId if authenticated, otherwise req.body.userId
+    const userId = req.body.userId; // Use req.userId if authenticated, otherwise req.body.userId
 
     if (!userId) {
       return res

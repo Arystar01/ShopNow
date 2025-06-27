@@ -143,7 +143,12 @@ const AdminDashboard = () => {
 
   const displayOrders = async () => {
     try {
-      const response = await axios.get(`${backendUrl}/api/order/list`);
+      const response = await axios.get(`${backendUrl}/api/order/list`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      // console.log("Orders:", response.data.orders);
       if (response.data.success) {
         setOrders(response.data.orders);
       }

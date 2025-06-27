@@ -10,9 +10,12 @@ const Login = () => {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [loader, setLoader] = useState(false);
+  const [error, setError] = useState('');
 
   const onSubmitHandler = async (event) => {
     event.preventDefault();
+    setLoader(true); // ✅ Start loader
     try {
       if (!backendUrl) throw new Error("Backend URL is missing");
 
@@ -21,14 +24,11 @@ const Login = () => {
           name, email, password
         });
         if (response.data.success) {
-          if (response.data.success) {
-  const { token, userId, isAdmin } = response.data;
-  localStorage.setItem('token', token);
-  localStorage.setItem('userId', userId);
-  localStorage.setItem('isAdmin', isAdmin);
-  setToken(token);
-}
-
+          const { token, userId, isAdmin } = response.data;
+          localStorage.setItem('token', token);
+          localStorage.setItem('userId', userId);
+          localStorage.setItem('isAdmin', isAdmin);
+          setToken(token);
         } else {
           toast.error(response.data.message);
         }
@@ -46,6 +46,8 @@ const Login = () => {
     } catch (error) {
       console.log("Login/Register Error:", error);
       toast.error(error.response?.data?.message || error.message);
+    } finally {
+      setLoader(false); // ✅ End loader
     }
   };
 
@@ -100,8 +102,16 @@ const Login = () => {
         )}
       </div>
 
-      <button className='bg-black text-white font-light px-8 py-2 mt-4'>
-        {currentState === 'Login' ? 'Sign In' : 'Sign Up'}
+      <button
+        type="submit"
+        disabled={loader}
+        className='bg-black text-white font-light px-8 py-2 mt-4 flex items-center justify-center min-w-[120px]'
+      >
+        {loader ? (
+          <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+        ) : (
+          currentState === 'Login' ? 'Sign In' : 'Sign Up'
+        )}
       </button>
     </form>
   );
