@@ -49,3 +49,4 @@ app.listen(port, () => {
     // connectCloudinary(); // Uncomment if Cloudinary is used
     console.log(`Server is running on port ${port}`);
 });
+    
