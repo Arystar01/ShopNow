@@ -32,6 +32,20 @@ app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Serve static files from React
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
+// For any other routes, serve the frontend
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
 app.listen(port, () => {
     connectDb();
     // connectCloudinary();
