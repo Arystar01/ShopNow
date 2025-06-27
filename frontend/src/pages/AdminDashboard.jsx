@@ -202,7 +202,7 @@ const AdminDashboard = () => {
         },
       });
 
-      console.log("Response from server:", response.data);
+      // console.log("Response from server:", response.data);
       if (response.data.success) {
         setActiveView("products"); // Go to product list after adding
         setNewProductData({}); // Clear form data

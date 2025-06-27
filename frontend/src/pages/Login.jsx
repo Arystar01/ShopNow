@@ -44,7 +44,7 @@ const Login = () => {
         }
       }
     } catch (error) {
-      console.log("Login/Register Error:", error);
+      // console.log("Login/Register Error:", error);
       toast.error(error.response?.data?.message || error.message);
     } finally {
       setLoader(false); // ✅ End loader
