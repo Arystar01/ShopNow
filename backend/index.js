@@ -1,6 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 import connectDb from './config/mongodb.js';
 import connectCloudinary from './config/cloudinary.js';
 import userRouter from './routes/userRoute.js';
@@ -12,9 +15,13 @@ dotenv.config();
 
 const app = express();
 
-// ✅ Use CORS with proper origin for development
+// To resolve __dirname in ES Modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// ✅ CORS for development (you can customize for prod)
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
     credentials: true
 }));
 
@@ -22,33 +29,23 @@ app.use(express.json());
 
 const port = process.env.PORT || 3000;
 
-// ✅ Corrected route paths with leading slashes
+// ✅ API Routes
 app.use('/api/user', userRouter);
 app.use('/api/product', productRouter);
 app.use('/api/cart', cartRouter);
 app.use('/api/order', orderRouter);
 
-app.get('/', (req, res) => {
-    res.send('Hello World!');
-});
+// ✅ Serve frontend static files (from Vite build)
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-// Serve static files from React
-app.use(express.static(path.join(__dirname, '../client/dist')));
-
-// For any other routes, serve the frontend
+// ✅ Catch-all route to serve frontend for React Router
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
+// ✅ Start server
 app.listen(port, () => {
     connectDb();
-    // connectCloudinary();
+    // connectCloudinary(); // Uncomment if Cloudinary is used
     console.log(`Server is running on port ${port}`);
-    
 });
