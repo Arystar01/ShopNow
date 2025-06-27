@@ -30,12 +30,13 @@ const Navbar = () => {
     setCartItems({});
   };
 
-useEffect(() => {
-  const token = localStorage.getItem("token")   ;
-  const isAdmin = localStorage.getItem("isAdmin") === "true"; // ✅ convert string to boolean
-  setisAdminn(isAdmin);
-  setToken(token);
-}, []);
+  useEffect(() => {
+    const token = localStorage.getItem("token") || token;
+    console.log("isadmin", localStorage.getItem("isAdmin")) ;
+    const isAdmin = localStorage.getItem("isAdmin") === "true"; // ✅ convert string to boolean
+    setisAdminn(isAdmin);
+    setToken(token);
+  }, []);
 
   return (
     <div
@@ -56,17 +57,15 @@ useEffect(() => {
             key={path}
             to={path}
             className={({ isActive }) =>
-              `flex flex-col items-center gap-1 ${
-                isActive ? "text-black" : "text-gray-500"
+              `flex flex-col items-center gap-1 ${isActive ? "text-black" : "text-gray-500"
               }`
             }
           >
             <p>{label}</p>
             {/** Only show <hr> if active */}
             <hr
-              className={`w-2/4 border-dotted h-[1.5px] transition-all duration-300 ${
-                path === location.pathname ? "bg-gray-700" : "bg-transparent"
-              }`}
+              className={`w-2/4 border-dotted h-[1.5px] transition-all duration-300 ${path === location.pathname ? "bg-gray-700" : "bg-transparent"
+                }`}
             />
           </NavLink>
         ))}
@@ -94,13 +93,10 @@ useEffect(() => {
             <div className="group-hover:block hidden absolute dropdown-menu right-0 pt-4">
               <div className="flex flex-col gap-2 w-36 py-3 px-5  bg-slate-100 text-gray-500 rounded">
                 <Link
-  to="/profile"
-  className="cursor-pointer hover:text-black"
->
-  My Profile
-</Link>
-
-                
+                  to="/profile"
+                  className="cursor-pointer hover:text-black"                >
+                  My Profile
+                </Link>
                 <p
                   onClick={() => navigate("/orders")}
                   className="cursor-pointer hover:text-black"
@@ -109,7 +105,7 @@ useEffect(() => {
                 </p>
                 <p onClick={logout} className="cursor-pointer hover:text-black">
                   Logout
-                 
+
                 </p>
                 {
                   isAdminn && (
