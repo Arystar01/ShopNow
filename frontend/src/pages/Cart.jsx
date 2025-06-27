@@ -62,11 +62,11 @@ const Cart = () => {
             </button>
           </div>
         ) : (
-          <div className='space-y-6'>
+          <div className='space-y-6 border-2 border-black rounded-md p-6'>
             {cartData.map((item) => (
               <div
                 key={`${item._id}_${item.size}`}
-                className='flex flex-col sm:flex-row items-center justify-between py-6 border-b last:border-b-0 text-gray-700 gap-4'
+                className='flex flex-col sm:flex-row items-center justify-between py-6 border-b  border-black last:border-b-0 text-gray-700 gap-4'
               >
                 <div className='flex items-start gap-6 flex-grow'>
                   {/* Link for product image */}

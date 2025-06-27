@@ -73,6 +73,7 @@ const PlaceOrder = () => {
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     let orderItems = [];
+    console.log(localStorage.getItem("token"));
 
     for (const items in cartItems) {
       for (const item in cartItems[items]) {
@@ -89,25 +90,31 @@ const PlaceOrder = () => {
       }
     }
     let orderData = {
-      address: formData.address,
-      city: formData.city,
-      state: formData.state,
-      zip: formData.zip,
-      phone: formData.phone,
-      name: formData.name,
-      email: formData.email,
-      method: method,
-      amount: getCartAmount() + delivery_fee,
-      items: orderItems,
-    };
+  userId: localStorage.getItem('userId'),
+  address: {
+    line: formData.address,
+    city: formData.city,
+    state: formData.state,
+    zip: formData.zip,
+    phone: formData.phone,
+    name: formData.name,
+    email: formData.email
+  },
+  method: method,
+  amount: getCartAmount() + delivery_fee,
+  items: orderItems,
+};
+
     switch (method) {
       case 'cod':{
-                    const response = await axios.post(backendUrl + '/api/order/place',orderData,{headers:{token}})
+                    const response = await axios.post(backendUrl + '/api/order/place',orderData,{headers:{token: localStorage.getItem('token')}})
+                    console.log(response);
                     if (response.data.success) {
                         setCartItems({})
                         navigate('/orders')
                     } else {
                         toast.error(response.data.message)
+                        console.log("error in  placing order",response.data.message);
                     }
                     break;
                 }
