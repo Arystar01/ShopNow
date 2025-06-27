@@ -9,6 +9,8 @@ import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { assets } from "../assets/assets.js";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
+
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
@@ -22,6 +24,7 @@ const Navbar = () => {
     setToken,
     setCartItems,
   } = useContext(ShopContext);
+const location = useLocation();
 
   const logout = () => {
     navigate("/login");
